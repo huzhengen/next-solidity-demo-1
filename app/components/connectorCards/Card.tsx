@@ -36,24 +36,9 @@ export function Card({
     <div
       style={{
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        width: '20rem',
-        padding: '1rem',
-        margin: '1rem',
-        overflow: 'auto',
-        border: '1px solid',
-        borderRadius: '1rem',
       }}
     >
-      <b>{getName(connector)}</b>
-      <div style={{ marginBottom: '1rem' }}>
-        <Status isActivating={isActivating} isActive={isActive} error={error} />
-      </div>
-      <Chain chainId={activeChainId} />
-      <div style={{ marginBottom: '1rem' }}>
-        <Accounts accounts={accounts} provider={provider} ENSNames={ENSNames} />
-      </div>
+      <Accounts accounts={accounts} provider={provider} ENSNames={ENSNames} />
       <ConnectWithSelect
         connector={connector}
         activeChainId={activeChainId}

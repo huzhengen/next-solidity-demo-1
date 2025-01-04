@@ -2,6 +2,7 @@ import type { BigNumber } from '@ethersproject/bignumber';
 import { formatEther } from '@ethersproject/units';
 import type { Web3ReactHooks } from '@web3-react/core';
 import { useEffect, useState } from 'react';
+import { Address } from '@ant-design/web3';
 
 function useBalances(
   provider?: ReturnType<Web3ReactHooks['useProvider']>,
@@ -45,16 +46,23 @@ export function Accounts({
 
   return (
     <div>
-      Accounts:{' '}
       <b>
         {accounts.length === 0
           ? 'None'
           : accounts?.map((account, i) => (
-              <ul key={account} style={{ margin: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {ENSNames?.[i] ?? account}
-                {balances?.[i] ? ` (Ξ${formatEther(balances[i])})` : null}
-              </ul>
-            ))}
+            <ul key={account} style={{ margin: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {/* {ENSNames?.[i] ?? account.substring(0, 6)} */}
+              {ENSNames?.[i] ?? <Address
+                ellipsis={{
+                  headClip: 8,
+                  tailClip: 6,
+                }}
+                copyable
+                address={account}
+              />}
+              {balances?.[i] ? ` (${formatEther(balances[i]).substring(0, 6)})` : null}
+            </ul>
+          ))}
       </b>
     </div>
   );

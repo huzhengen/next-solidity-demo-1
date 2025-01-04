@@ -7,9 +7,9 @@ const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useE
 
 export default function MetaMaskCard() {
   const chainId = useChainId();
-  console.log('chainId', chainId);
+  // console.log('chainId', chainId);
   const accounts = useAccounts();
-  console.log('accounts', accounts);
+  // console.log('accounts', accounts);
   //获取链接状态
   const isActivating = useIsActivating();
   //获取是否钱包已激活
@@ -18,7 +18,7 @@ export default function MetaMaskCard() {
   const provider = useProvider();
   //获取ENSNames 0x88888rtrfgt -> laoyuan.eth
   const ENSNames = useENSNames(provider);
-  console.log('ENSNames', ENSNames);
+  // console.log('ENSNames', ENSNames);
 
   const [error, setError] = useState<Error | undefined>(undefined);
 

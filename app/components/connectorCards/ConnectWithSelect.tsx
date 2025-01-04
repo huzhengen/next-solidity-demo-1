@@ -12,9 +12,8 @@ function ChainSelect({
   switchChain: (chainId: number) => void;
   chainIds: number[];
 }) {
-  console.log('chainIds', chainIds);
   return (
-    <select style={{ border: '1px solid red' }}
+    <select
       value={activeChainId}
       onChange={event => {
         switchChain(Number(event.target.value));
@@ -97,7 +96,7 @@ export function ConnectWithSelect({
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex' }}>
       <ChainSelect
         activeChainId={desiredChainId ?? -1}
         switchChain={switchChain}
