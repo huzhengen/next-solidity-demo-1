@@ -1,11 +1,12 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Image from "next/image";
 import Header from '@/app/components/Header';
 import { useParams } from 'next/navigation';
 import { Contract, ethers } from 'ethers';
 import YiDengTokenAbi from '../../abis/YiDengToken.json';
 import CourseMarketAbi from '../../abis/CourseMarket.json';
+import nftAbi from '../../abis/nft.json';
 import { hooks } from '../../connections/metaMask';
 const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
@@ -29,6 +30,7 @@ const Course = () => {
     hasCourse: false,
   });
   const [hasCourse, setHasCourse] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const accounts = useAccounts();
 
   const { useProvider } = hooks;
@@ -38,12 +40,15 @@ const Course = () => {
 
   const yiDengTokenAddress = process.env.NEXT_PUBLIC_TOKEN_ADDRESS
   const courseAddress = process.env.NEXT_PUBLIC_COURSE_ADDRESS
-  if (!yiDengTokenAddress || !courseAddress) {
+  const nftAddress = process.env.NEXT_PUBLIC_NFT_ADDRESS
+
+  if (!yiDengTokenAddress || !courseAddress || !nftAddress) {
     return <div>合约地址不存在</div>
   }
 
   const yiDengTokenContract = new ethers.Contract(yiDengTokenAddress, YiDengTokenAbi.abi, signer);
   const courseContract = new ethers.Contract(courseAddress, CourseMarketAbi.abi, signer);
+  const nftContract = new ethers.Contract(nftAddress, nftAbi.abi, signer);
 
   const getCourse = async () => {
     if (!accounts) { return }
@@ -117,7 +122,43 @@ const Course = () => {
     }
   }
 
+  const createNFT = async (course: CourseType) => {
+    console.log('createNFT')
+    try {
+      if (!accounts) { return }
+      console.log('accounts', accounts)
+
+      const result = await nftContract.mintCertificate(
+        accounts[0], course.uuid,
+        'https://teal-urgent-junglefowl-47.mypinata.cloud/ipfs/bafkreibbriusrwvtaakytbdozr3xaevc5klmotdjy4mlo4ij5p7kf75nea'
+      );
+
+      //  'https://teal-urgent-junglefowl-47.mypinata.cloud/ipfs/bafkreiafdcn66xrqkmv3eimjkdcic3pifn767ut3w7bg72wkiau7irvqxa'
+
+      console.log('result', result);
+
+      const transactionReceipt = await provider?.waitForTransaction(result.hash);
+
+      console.log(
+        '监听当前hash挖掘的收据交易状态【为1代表交易成功、为0代表交易失败】transactionReceipt.status：',
+        transactionReceipt?.status,
+      );
+      console.log(
+        '监听当前hash挖掘的收据交易event事件日志transactionReceipt.logs：',
+        transactionReceipt?.logs,
+      );
+    } catch (e: any) {
+      console.log('createNFT eee', e, typeof e)
+      console.log(e.code)
+    }
+  }
+
   useEffect(() => {
+    if (accounts && accounts[0].includes('923')) {
+      setIsAdmin(true)
+    } else {
+      setIsAdmin(false)
+    }
     getCourse();
   }, [id, accounts]);
 
@@ -157,7 +198,7 @@ const Course = () => {
             {hasCourse ? (
               <button
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                onClick={() => console.log('Buy clicked')}
+                onClick={() => console.log('view course')}
               >
                 View Course
               </button>
@@ -169,6 +210,12 @@ const Course = () => {
                 Buy Now
               </button>
             )}
+            {isAdmin && <button
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              onClick={() => createNFT(course)}
+            >
+              Create NFT
+            </button>}
           </div>
         </div>
       </div>
