@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import { useRouter } from 'next/navigation'
+import { Contract, ethers } from 'ethers';
+import YiDengTokenAbi from '../abis/YiDengToken.json';
+import CourseMarketAbi from '../abis/CourseMarket.json';
+import { hooks } from '../connections/metaMask';
+const { useChainId, useAccounts, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
 
 export default function CreateCourse() {
   const [name, setName] = useState('');
@@ -10,6 +15,20 @@ export default function CreateCourse() {
   const [price, setPrice] = useState('');
   const [message, setMessage] = useState('');
   const router = useRouter();
+
+  const { useProvider } = hooks;
+  const provider = useProvider();
+
+  const signer = provider?.getSigner();
+  //找到合约地址
+  const yiDengTokenAddress = process.env.NEXT_PUBLIC_TOKEN_ADDRESS
+  const courseAddress = process.env.NEXT_PUBLIC_COURSE_ADDRESS
+  if (!yiDengTokenAddress || !courseAddress) {
+    return <div>合约地址不存在</div>
+  }
+
+  const yiDengTokenContract = new ethers.Contract(yiDengTokenAddress, YiDengTokenAbi.abi, signer);
+  const courseContract = new ethers.Contract(courseAddress, CourseMarketAbi.abi, signer);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -25,11 +44,36 @@ export default function CreateCourse() {
 
     if (response.ok) {
       const data = await response.json();
-      setMessage(`Course created with ID: ${data.id}`);
-      setName('');
-      setDescription('');
-      setPrice('');
-      router.push('/');
+      try {
+        const result = await courseContract.addCourse(
+          data.uuid,
+          data.name,
+          BigInt(data.price!)
+        );
+        // const result = await courseContract.addCourse('2', 'course2', 1);
+
+        console.log('result', result);
+
+        const transactionReceipt = await provider?.waitForTransaction(result.hash);
+
+        console.log(
+          '监听当前hash挖掘的收据交易状态【为1代表交易成功、为0代表交易失败】transactionReceipt.status：',
+          transactionReceipt?.status,
+        );
+        console.log(
+          '监听当前hash挖掘的收据交易event事件日志transactionReceipt.logs：',
+          transactionReceipt?.logs,
+        );
+        setMessage(`Course created with ID: ${data.id}`);
+        setName('');
+        setDescription('');
+        setPrice('');
+        router.push('/');
+      } catch (e: any) {
+        console.log('eee', e, typeof e)
+        console.log(e.code)
+        setMessage(`Error: ${e.code}`);
+      }
     } else {
       const errorData = await response.json();
       setMessage(`Error: ${errorData.message}`);

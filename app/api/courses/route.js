@@ -1,5 +1,6 @@
 // app/api/courses/route.js
 import db from '../../../lib/db.js';
+import { v4 as uuidv4 } from 'uuid'; // 导入 UUID 生成函数
 
 export async function POST (req) {
   const { name, description, price } = await req.json();
@@ -9,9 +10,11 @@ export async function POST (req) {
   }
 
   try {
-    const stmt = db.prepare('INSERT INTO courses (name, description, price)  VALUES (?, ?, ?)');
-    const info = stmt.run(name, description, price);
-    return new Response(JSON.stringify({ id: info.lastInsertRowid, name, description, price }), { status: 201 });
+    // 生成 UUID
+    const uuid = uuidv4();
+    const stmt = db.prepare('INSERT INTO courses (uuid, name, description, price)  VALUES (?, ?, ?, ?)');
+    const info = stmt.run(uuid, name, description, price);
+    return new Response(JSON.stringify({ id: info.lastInsertRowid, uuid, name, description, price }), { status: 201 });
   } catch (error) {
     console.error(error);
     return new Response(JSON.stringify({ message: 'Database error' }), { status: 500 });
@@ -29,4 +32,3 @@ export async function GET () {
   }
 }
 
- 
