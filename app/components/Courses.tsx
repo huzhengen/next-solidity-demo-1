@@ -5,6 +5,7 @@ import { Space, Table, Tag } from 'antd';
 import type { TableProps } from 'antd';
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface DataType {
   id: string;
@@ -139,11 +140,17 @@ const Courses = ({
     }
   }, [accounts])
 
+  if (courses.length <= 0) {
+    return <div className="flex justify-center pt-10 h-screen text-2xl">
+      <Link href="/createCourse">Please create course first</Link>
+    </div>
+  }
+
   return (
     // <Table<DataType> columns={columns} rowKey="id" dataSource={coursesWithStatus} />
-    <div className="max-w-4xl mx-auto flex gap-10">
+    <div className="max-w-4xl mx-auto flex   flex-wrap">
       {courses.map((course: any) => (
-        <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-md mb-6"
+        <div className="flex flex-col  bg-white rounded-lg shadow-md mb-6 w-1/3"
           key={course.id} onClick={() => router.push(`/courses/${course.id}`)}>
           <div className="p-6 flex-1">
             <Image className="cursor-pointer" src="/courseImage.avif" alt="course1" width={500} height={500} />

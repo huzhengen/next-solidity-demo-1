@@ -70,9 +70,9 @@ export default function CreateCourse() {
         setPrice('');
         router.push('/');
       } catch (e: any) {
-        console.log('eee', e, typeof e)
+        console.log('eee', e, typeof e, JSON.stringify(e))
         console.log(e.code)
-        setMessage(`Error: ${e.code}`);
+        setMessage(`Error: ${e.reason}`);
       }
     } else {
       const errorData = await response.json();
@@ -117,7 +117,7 @@ export default function CreateCourse() {
 
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Price (ETH)
+              Price
             </label>
             <input
               type="number"

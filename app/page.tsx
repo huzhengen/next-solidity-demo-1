@@ -85,9 +85,10 @@ export default function Home() {
   return (
     <div className="">
       <Header />
+      <Courses accounts={accounts} courseContract={courseContract} provider={provider}
+        courseAddress={courseAddress} yiDengTokenContract={yiDengTokenContract} />
 
-
-      <p>余额: {balance}</p>
+      {/* <p>余额: {balance}</p>
       <button
         onClick={async () => {
           try {
@@ -119,10 +120,9 @@ export default function Home() {
       >
         初始代币分发
       </button>
-      <br></br>
-      <Courses accounts={accounts} courseContract={courseContract} provider={provider}
-        courseAddress={courseAddress} yiDengTokenContract={yiDengTokenContract} />
-      <br></br>
+      <br></br> */}
+    
+      {/* <br></br>
       <button onClick={async () => {
         try {
           if (!accounts) { return }
@@ -133,11 +133,9 @@ export default function Home() {
           console.log('eee', e, typeof e)
           console.log(e.code)
         }
-      }}>是否有课程</button>
+      }}>是否有课程</button> */}
 
-
-
-      <p>{isPending ? 'loading' : 'loaded'}</p>
+      {/* <p>{isPending ? 'loading' : 'loaded'}</p> */}
     </div>
   );
 }
