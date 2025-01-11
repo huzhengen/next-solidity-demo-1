@@ -13,6 +13,7 @@ export default function Header() {
           <div className="flex gap-4">
             <Link href="/">Home</Link>
             <Link href="/createCourse">Create Course</Link>
+            <Link href="/buyToken">Buy Token</Link>
           </div>
         </div>
 

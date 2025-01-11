@@ -2,7 +2,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Image from "next/image";
 import Header from '@/app/components/Header';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Contract, ethers } from 'ethers';
 import YiDengTokenAbi from '../../abis/YiDengToken.json';
 import CourseMarketAbi from '../../abis/CourseMarket.json';
@@ -32,6 +32,7 @@ const Course = () => {
   const [hasCourse, setHasCourse] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const accounts = useAccounts();
+  const router = useRouter();
 
   const { useProvider } = hooks;
   const provider = useProvider();
@@ -188,6 +189,15 @@ const Course = () => {
           </div>
 
           <div className="flex gap-4 mt-4">
+          <button
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              onClick={() => {
+                router.push('/buyToken')
+              }}
+            >
+              Buy Token
+            </button>
+
             <button
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               onClick={() => approveToken(course)}
@@ -207,7 +217,7 @@ const Course = () => {
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                 onClick={() => buyCourse(course)}
               >
-                Buy Now
+                Buy Course
               </button>
             )}
             {isAdmin && <button
