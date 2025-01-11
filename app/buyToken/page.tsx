@@ -13,6 +13,7 @@ export default function BuyToken() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [yiDengAmount, setYiDengAmount] = useState('');
   const [message, setMessage] = useState('');
   const router = useRouter();
 
@@ -37,7 +38,7 @@ export default function BuyToken() {
       <div className="container mx-auto p-8">
         <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <h2 className="text-2xl font-bold mb-6 text-center">Swap ETH for YiDeng Token</h2>
-          
+
           <div className="space-y-4">
             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
               <label className="block text-sm font-medium mb-2">From (ETH)</label>
@@ -46,7 +47,10 @@ export default function BuyToken() {
                 className="w-full p-2 border rounded-md dark:bg-gray-600 dark:border-gray-500"
                 placeholder="Enter ETH amount"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                  setYiDengAmount(String(Number(e.target.value) * 1000));
+                }}
               />
             </div>
 
@@ -59,9 +63,9 @@ export default function BuyToken() {
             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
               <label className="block text-sm font-medium mb-2">To (YiDeng Token)</label>
               <input
-                type="number"
+                type="text"
                 className="w-full p-2 border rounded-md dark:bg-gray-600 dark:border-gray-500"
-                value={price}
+                value={yiDengAmount}
                 disabled
                 placeholder="YiDeng Token amount"
               />
@@ -106,7 +110,7 @@ export default function BuyToken() {
           </div>
         </div>
       </div>
-      
+
 
     </div>
   );
